@@ -32,6 +32,10 @@ async def api_public_payment_longpolling(payment_hash):
     print("adding standalone invoice listener", payment_hash, send_payment)
     api_invoice_listeners.append(send_payment)
 
-    async for payment in receive_payment:
-        if payment.payment_hash == payment_hash:
-            return jsonify({"status": "paid"}), HTTPStatus.OK
+    try:
+        async for payment in receive_payment:
+            if payment.payment_hash == payment_hash:
+                return jsonify({"status": "paid"}), HTTPStatus.OK
+    except Exception as exc:
+        print("public payment hash listener errored?", exc)
+        return jsonify({"message": str(exc)}), HTTPStatus.INTERNAL_SERVER_ERROR
