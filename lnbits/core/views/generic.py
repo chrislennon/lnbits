@@ -196,7 +196,7 @@ async def lnurl_balance_notify(service: str):
 
 @core_app.route("/lnurlwallet")
 async def lnurlwallet():
-    async with db.connect() as conn:
+    async with db.connect(check_same_thread=False) as conn:
         account = await create_account(conn=conn)
         user = await get_user(account.id, conn=conn)
         wallet = await create_wallet(user_id=user.id, conn=conn)

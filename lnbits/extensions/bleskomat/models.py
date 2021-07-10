@@ -79,7 +79,7 @@ class BleskomatLnurl(NamedTuple):
     async def execute_action(self, query: Dict[str, str]):
         self.validate_action(query)
         used = False
-        async with db.connect() as conn:
+        async with db.connect(check_same_thread=False) as conn:
             if self.initial_uses > 0:
                 used = await self.use(conn)
                 if not used:
