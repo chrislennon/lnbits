@@ -12,7 +12,7 @@ async def get_targets(source_wallet: str) -> List[Target]:
 
 
 async def set_targets(source_wallet: str, targets: List[Target]):
-    async with db.connect(check_same_thread=False) as conn:
+    async with db.connect() as conn:
         await conn.execute(
             "DELETE FROM splitpayments.targets WHERE source = ?", (source_wallet,)
         )
