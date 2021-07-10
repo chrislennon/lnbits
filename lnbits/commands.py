@@ -75,10 +75,10 @@ async def migrate_databases():
                     if db.schema == None:
                         await set_migration_version(db, db_name, version)
                     else:
-                        async with core_db.connect(check_same_thread=False) as conn:
+                        async with core_db.connect() as conn:
                             await set_migration_version(conn, db_name, version)
 
-    async with core_db.connect(check_same_thread=False) as conn:
+    async with core_db.connect() as conn:
         if conn.type == SQLITE:
             exists = await conn.fetchone(
                 "SELECT * FROM sqlite_master WHERE type='table' AND name='dbversions'"
@@ -107,5 +107,5 @@ async def migrate_databases():
                 f"Please make sure that the extension `{ext.code}` has a migrations file."
             )
 
-        async with ext_db.connect(check_same_thread=False) as ext_conn:
+        async with ext_db.connect() as ext_conn:
             await run_migration(ext_conn, ext_migrations)

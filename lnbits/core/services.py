@@ -84,7 +84,7 @@ async def pay_invoice(
     description: str = "",
     conn: Optional[Connection] = None,
 ) -> str:
-    async with (db.reuse_conn(conn) if conn else db.connect(check_same_thread=False)) as conn:
+    async with (db.reuse_conn(conn) if conn else db.connect()) as conn:
         temp_id = f"temp_{urlsafe_short_hash()}"
         internal_id = f"internal_{urlsafe_short_hash()}"
 

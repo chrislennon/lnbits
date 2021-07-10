@@ -110,7 +110,7 @@ class Database(Compat):
             )
         else:
             self.path = os.path.join(LNBITS_DATA_FOLDER, f"{self.name}.sqlite3")
-            database_uri = f"sqlite:///{self.path}"
+            database_uri = f"sqlite:///{self.path}?check_same_thread=False"
             self.type = SQLITE
 
         self.schema = self.name
@@ -126,7 +126,7 @@ class Database(Compat):
     async def connect(self):
         await self.lock.acquire()
         try:
-            async with self.engine.connect(check_same_thread=False) as conn:
+            async with self.engine.connect() as conn:
                 async with conn.begin() as txn:
                     wconn = Connection(conn, txn, self.type, self.name, self.schema)
 
@@ -145,19 +145,19 @@ class Database(Compat):
             self.lock.release()
 
     async def fetchall(self, query: str, values: tuple = ()) -> list:
-        async with self.connect(check_same_thread=False) as conn:
+        async with self.connect() as conn:
             result = await conn.execute(query, values)
             return await result.fetchall()
 
     async def fetchone(self, query: str, values: tuple = ()):
-        async with self.connect(check_same_thread=False) as conn:
+        async with self.connect() as conn:
             result = await conn.execute(query, values)
             row = await result.fetchone()
             await result.close()
             return row
 
     async def execute(self, query: str, values: tuple = ()):
-        async with self.connect(check_same_thread=False) as conn:
+        async with self.connect() as conn:
             return await conn.execute(query, values)
 
     @asynccontextmanager

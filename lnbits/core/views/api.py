@@ -82,7 +82,7 @@ async def api_payments_create_invoice():
         price_in_sats = await fiat_amount_as_satoshis(g.data["amount"], g.data["unit"])
         amount = price_in_sats
 
-    async with db.connect(check_same_thread=False) as conn:
+    async with db.connect() as conn:
         try:
             payment_hash, payment_request = await create_invoice(
                 wallet_id=g.wallet.id,
