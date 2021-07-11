@@ -38,7 +38,7 @@ async def favicon():
 @core_app.route("/")
 async def home():
     return await render_template(
-        "core/index.html", lnurl=request.args.get("lightning", None)
+        "core/index2.html", lnurl=request.args.get("lightning", None)
     )
 
 
